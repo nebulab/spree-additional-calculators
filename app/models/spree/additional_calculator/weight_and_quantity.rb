@@ -3,7 +3,7 @@ module Spree
     # if weight is not defined for an item, use this instead
     preference :default_item_weight, :decimal, :default => 0
 
-    attr_accessible :preferred_default_item_weight
+    attr_accessible :preferred_default_item_weight, :additional_calculator_rates_attributes
 
     # The description of the calculator
     def self.description

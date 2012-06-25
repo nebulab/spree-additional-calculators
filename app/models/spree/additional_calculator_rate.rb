@@ -7,6 +7,13 @@ module Spree
 
     belongs_to :calculator
 
+    # Hack to temporarily fix ActiveRecord DangerousMethodError problem with calculator_type
+    class << self
+      def instance_method_already_implemented?(method_name)
+        return true if method_name == 'attribute?'
+      end
+    end
+
     scope :for_type, lambda {|type| where(:rate_type => type) }
     scope :for_calculator, lambda {|calculator_id| where(:calculator_id => calculator_id) }
     scope :for_value, lambda {|value| where("from_value <= ? AND ? <= to_value", value, value)}
@@ -14,6 +21,8 @@ module Spree
     validates :calculator_id, :rate_type, :from_value, :to_value, :rate, :presence => true
     validates :from_value, :to_value, :rate, :numericality => true, :allow_blank => true
     validate :validate_from_value_smaller_than_to_value
+
+    attr_accessible :rate_type, :from_value, :to_value, :rate
 
     def validate_from_value_smaller_than_to_value
       # ignore following cases
